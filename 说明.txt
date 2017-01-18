@@ -1,0 +1,18 @@
+//初始化CFtree
+CF_TreeBuilder machine_condition_treeBuilder(data_len, data_dim, std::log(data_len), 0, std::sqrt(data_len), std::log(data_len));
+//将数据转化为DataPoint，插入tree
+for (i = 0; i < data_len; i++)
+{
+	DataPoint dataPoint(data_dim);
+	for (j = 0; j < data_dim; j++)
+	{
+		dataPoint[j] = data[i][j];
+	}
+	machine_condition_treeBuilder.addPointToTree(dataPoint);
+}
+//得到叶子节点
+auto machine_condition_entries = machine_condition_treeBuilder.getAllLeafEntries();
+//将叶子节点进行聚类
+auto clusters = distrKMeans(machine_condition_entries, data_dim, k);
+//得到聚类中心
+Datastruct center = getClusteringCenter(clusters, data_dim, k);
